@@ -2,6 +2,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 #if STARTER_ASSETS_PACKAGES_CHECKED
+using Unity.Cinemachine;
 #endif
 
 namespace StarterAssets
