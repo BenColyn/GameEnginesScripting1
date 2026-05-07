@@ -23,7 +23,7 @@ public class EnemyMovement : MonoBehaviour
             if (direction.magnitude <= maxDistance)
             {
                 inRange = true;
-                Debug.Log("Target ist in range");
+               
             }
             if (direction.magnitude >= maxDistance)
             {
