@@ -41,7 +41,7 @@ public class PlayerWeaponLoadout : MonoBehaviour
     [Header("Optional animator (add bool \"HoldingGun\" in controller for poses)")]
     [SerializeField] string holdingGunParameter = "HoldingGun";
 
-    WeaponSlot _activeSlot = WeaponSlot.UnarmedHolstered;
+    WeaponSlot _activeSlot = WeaponSlot.GunEquipped;
     Transform _weapon;
 
     public bool IsGunEquipped => _activeSlot == WeaponSlot.GunEquipped && _weapon != null && _weapon.gameObject.activeSelf;
