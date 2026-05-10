@@ -80,9 +80,7 @@ GameObject:
   - component: {fileID: 6589440287070451230}
   - component: {fileID: 4872489169424077207}
   - component: {fileID: 8877665544332211001}
-  - component: {fileID: 1827364519}
-  - component: {fileID: 1728394652}
-  - component: {fileID: 1728394660}
+  - component: {fileID: 8833445566}
   m_Layer: 8
   m_Name: Target
   m_TagString: Untagged
@@ -335,7 +333,7 @@ MonoBehaviour:
   aimWeight: 0.35
   spineBoneName: Bip01 Spine1
   spineBoneFallback: Bip01 Spine
---- !u!114 &1827364519
+--- !u!114 &8833445566
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -344,50 +342,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 463236617251174108}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e4f8a2c91d34056817284950abcde01, type: 3}
+  m_Script: {fileID: 11500000, guid: f3a2b1c0d9e847658392817465839202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponPrefab: {fileID: 0}
-  holsterBoneOverride: {fileID: 0}
-  handBoneOverride: {fileID: 0}
-  holsterLocalPosition: {x: 0.06, y: 0.1, z: -0.16}
-  holsterLocalEulerAngles: {x: 0, y: 190, z: 95}
-  handLocalPosition: {x: 0, y: -0.08, z: 0}
-  handLocalEulerAngles: {x: 0, y: 0, z: 0}
-  barrelDirectionLocal: {x: 0, y: -1, z: 0}
-  gripLocalOffset: {x: 0, y: 0, z: 0}
-  muzzleDistanceFromGrip: 0.3
-  holdingGunParameter: HoldingGun
---- !u!114 &1728394652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 463236617251174108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9e8f7d6c5b4a392938475665940312, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loadout: {fileID: 1827364519}
-  bulletPrefab: {fileID: 100100000, guid: c4e5f60718293a4b8d9e0f1a2b3c4d5e, type: 3}
-  magazineCapacity: 12
-  maxReserveAmmo: 48
-  fireCooldown: 0.1
-  aimCamera: {fileID: 0}
---- !u!114 &1728394660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 463236617251174108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1d2e3f40516273849596a7b8c9d0e1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  punchCooldown: 1
+  punchDuration: 0.38
+  rightHandPunchEuler: {x: -42, y: 28, z: 12}
+  leftHandPunchEuler: {x: -42, y: -28, z: -12}
+  sphereCastOnPunch: 1
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  sphereRadius: 0.14
+  sphereDistance: 1.1
+  hitPhase: 0.45
+  punchLeftTrigger: 
+  punchRightTrigger: 
 --- !u!1 &891526004255555362
 GameObject:
   m_ObjectHideFlags: 0
