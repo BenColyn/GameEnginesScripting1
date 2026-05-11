@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 #endif
 
 /// <summary>
-/// 左键交替挥拳：肩–上臂–前臂–拳三层骨骼叠加旋转（LateUpdate，避开 Animator 覆盖）；可选 SphereCast。
+/// 左键交替挥拳：肩→上臂→前臂→手，沿角色水平前向的世界轴 AngleAxis 叠加（LateUpdate）；左右共用一套角度与同向摆臂（双拳均朝前）；可选 SphereCast。
 /// </summary>
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(1100)]
@@ -13,15 +13,15 @@ public class PlayerUnarmedPunch : MonoBehaviour
     [SerializeField] float punchCooldown = 1f;
     [SerializeField] float punchDuration = 0.38f;
 
-    [Header("Right arm punch offsets (local euler × swing curve)")]
-    [SerializeField] Vector3 rightUpperArmPunchEuler = new Vector3(62f, -28f, 42f);
-    [SerializeField] Vector3 rightLowerArmPunchEuler = new Vector3(48f, 8f, -12f);
-    [SerializeField] Vector3 rightHandPunchEuler = new Vector3(22f, 14f, 10f);
+    [Header("Forward swing — world axis from character horizontal forward")]
+    [Tooltip("整体挥击方向反了时改为 -1。")]
+    [SerializeField] float axisSignFlip = 1f;
 
-    [Header("Left arm punch offsets")]
-    [SerializeField] Vector3 leftUpperArmPunchEuler = new Vector3(-62f, 28f, -42f);
-    [SerializeField] Vector3 leftLowerArmPunchEuler = new Vector3(-48f, -8f, 12f);
-    [SerializeField] Vector3 leftHandPunchEuler = new Vector3(-22f, -14f, -10f);
+    [Tooltip("各段绕侧向轴的最大转角（度），× Sin(π·进度)；左右臂共用幅度与同向摆臂。")]
+    [SerializeField] float shoulderSwingDegrees = 22f;
+    [SerializeField] float upperArmSwingDegrees = 38f;
+    [SerializeField] float lowerArmSwingDegrees = 18f;
+    [SerializeField] float handSwingDegrees = 10f;
 
     [Header("Hit detect (optional)")]
     [SerializeField] bool sphereCastOnPunch = true;
@@ -36,9 +36,11 @@ public class PlayerUnarmedPunch : MonoBehaviour
 
     Animator _animator;
 
+    Transform _leftShoulder;
     Transform _leftUpperArm;
     Transform _leftLowerArm;
     Transform _leftHand;
+    Transform _rightShoulder;
     Transform _rightUpperArm;
     Transform _rightLowerArm;
     Transform _rightHand;
@@ -99,11 +101,12 @@ public class PlayerUnarmedPunch : MonoBehaviour
         if (!_punching)
             return;
 
+        Transform shoulder = _punchUseLeft ? _leftShoulder : _rightShoulder;
         Transform upper = _punchUseLeft ? _leftUpperArm : _rightUpperArm;
         Transform lower = _punchUseLeft ? _leftLowerArm : _rightLowerArm;
         Transform hand = _punchUseLeft ? _leftHand : _rightHand;
 
-        if (upper == null || lower == null || hand == null)
+        if (shoulder == null || upper == null || lower == null || hand == null)
         {
             _punching = false;
             return;
@@ -113,17 +116,19 @@ public class PlayerUnarmedPunch : MonoBehaviour
         float u = punchDuration > 1e-5f ? Mathf.Clamp01(_punchElapsed / punchDuration) : 1f;
         float curve = Mathf.Sin(u * Mathf.PI);
 
-        Vector3 eu = _punchUseLeft ? leftUpperArmPunchEuler : rightUpperArmPunchEuler;
-        Vector3 el = _punchUseLeft ? leftLowerArmPunchEuler : rightLowerArmPunchEuler;
-        Vector3 eh = _punchUseLeft ? leftHandPunchEuler : rightHandPunchEuler;
+        Vector3 swingForward = GetHorizontalForward();
+        Vector3 swingAxis = GetSwingAxis(swingForward);
+        if (swingAxis.sqrMagnitude < 1e-8f)
+            swingAxis = transform.right;
 
-        Quaternion bu = upper.localRotation;
-        Quaternion bl = lower.localRotation;
-        Quaternion bh = hand.localRotation;
+        // 左右骨骼在世界里镜像，对两侧用同一转角符号才能让双拳都朝角色前方摆；不再对右臂取反号。
+        const float forwardSwingSign = -1f;
+        float sign = forwardSwingSign * axisSignFlip;
 
-        upper.localRotation = bu * Quaternion.Euler(eu * curve);
-        lower.localRotation = bl * Quaternion.Euler(el * curve);
-        hand.localRotation = bh * Quaternion.Euler(eh * curve);
+        ApplyWorldSwing(shoulder, shoulderSwingDegrees * curve * sign, swingAxis);
+        ApplyWorldSwing(upper, upperArmSwingDegrees * curve * sign, swingAxis);
+        ApplyWorldSwing(lower, lowerArmSwingDegrees * curve * sign, swingAxis);
+        ApplyWorldSwing(hand, handSwingDegrees * curve * sign, swingAxis);
 
         if (sphereCastOnPunch && !_hitSent && u >= hitPhase)
         {
@@ -135,31 +140,61 @@ public class PlayerUnarmedPunch : MonoBehaviour
             _punching = false;
     }
 
+    static void ApplyWorldSwing(Transform bone, float angleDegrees, Vector3 axis)
+    {
+        if (bone == null || Mathf.Abs(angleDegrees) < 1e-4f)
+            return;
+        Quaternion delta = Quaternion.AngleAxis(angleDegrees, axis.normalized);
+        bone.rotation = delta * bone.rotation;
+    }
+
+    Vector3 GetHorizontalForward()
+    {
+        Vector3 f = transform.forward;
+        f.y = 0f;
+        if (f.sqrMagnitude < 1e-6f)
+            f = Vector3.forward;
+        return f.normalized;
+    }
+
+    Vector3 GetSwingAxis(Vector3 horizontalForward)
+    {
+        Vector3 axis = Vector3.Cross(Vector3.up, horizontalForward);
+        if (axis.sqrMagnitude < 1e-8f)
+            axis = transform.right;
+        return axis.normalized;
+    }
+
     bool HasCompleteArm(bool left)
     {
         if (left)
-            return _leftUpperArm != null && _leftLowerArm != null && _leftHand != null;
-        return _rightUpperArm != null && _rightLowerArm != null && _rightHand != null;
+            return _leftShoulder != null && _leftUpperArm != null && _leftLowerArm != null && _leftHand != null;
+        return _rightShoulder != null && _rightUpperArm != null && _rightLowerArm != null && _rightHand != null;
     }
 
     bool ArmChainFullyResolved()
     {
-        return _leftUpperArm != null && _leftLowerArm != null && _leftHand != null
-               && _rightUpperArm != null && _rightLowerArm != null && _rightHand != null;
+        return HasCompleteArm(true) && HasCompleteArm(false);
     }
 
     void ResolveArmChain()
     {
         if (_animator != null && _animator.isHuman)
         {
+            _leftShoulder = _animator.GetBoneTransform(HumanBodyBones.LeftShoulder);
             _leftUpperArm = _animator.GetBoneTransform(HumanBodyBones.LeftUpperArm);
             _leftLowerArm = _animator.GetBoneTransform(HumanBodyBones.LeftLowerArm);
             _leftHand = _animator.GetBoneTransform(HumanBodyBones.LeftHand);
+            _rightShoulder = _animator.GetBoneTransform(HumanBodyBones.RightShoulder);
             _rightUpperArm = _animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
             _rightLowerArm = _animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
             _rightHand = _animator.GetBoneTransform(HumanBodyBones.RightHand);
         }
 
+        if (_leftShoulder == null)
+            _leftShoulder = FindChildRecursive(transform, "Left_Shoulder")
+                            ?? FindChildRecursive(transform, "Left_Clavicle")
+                            ?? FindChildRecursive(transform, "L_Clavicle");
         if (_leftUpperArm == null)
             _leftUpperArm = FindChildRecursive(transform, "Left_UpperArm");
         if (_leftLowerArm == null)
@@ -170,6 +205,10 @@ public class PlayerUnarmedPunch : MonoBehaviour
                         ?? FindChildRecursive(transform, "L_Hand")
                         ?? FindChildRecursive(transform, "hand_l");
 
+        if (_rightShoulder == null)
+            _rightShoulder = FindChildRecursive(transform, "Right_Shoulder")
+                             ?? FindChildRecursive(transform, "Right_Clavicle")
+                             ?? FindChildRecursive(transform, "R_Clavicle");
         if (_rightUpperArm == null)
             _rightUpperArm = FindChildRecursive(transform, "Right_UpperArm");
         if (_rightLowerArm == null)
