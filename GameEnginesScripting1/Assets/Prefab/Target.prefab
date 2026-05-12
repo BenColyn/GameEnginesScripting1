@@ -345,10 +345,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a2b1c0d9e847658392817465839202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  punchCooldown: 1
-  punchDuration: 0.38
-  rightHandPunchEuler: {x: -42, y: 28, z: 12}
-  leftHandPunchEuler: {x: -42, y: -28, z: -12}
+  minPunchInterval: 0.8
+  punchDurationLeft: 0.68
+  punchDurationRight: 1
+  brawlerLayerName: BrawlerPunch
+  brawlerStateMachineRootName: BrawlerPunch
+  stateHookLeft: BrawlerHookLeft
+  stateHookRight: BrawlerHookRight
+  hookLeftTrigger: BrawlerHookLeft
+  hookRightTrigger: BrawlerHookRight
+  punchCrossFade: 0.08
+  logPunchDiagnostics: 0
   sphereCastOnPunch: 1
   hitLayers:
     serializedVersion: 2
@@ -356,8 +363,6 @@ MonoBehaviour:
   sphereRadius: 0.14
   sphereDistance: 1.1
   hitPhase: 0.45
-  punchLeftTrigger: 
-  punchRightTrigger: 
 --- !u!1 &891526004255555362
 GameObject:
   m_ObjectHideFlags: 0
