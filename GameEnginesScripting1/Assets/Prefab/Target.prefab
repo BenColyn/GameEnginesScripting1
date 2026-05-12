@@ -357,8 +357,6 @@ MonoBehaviour:
   sphereRadius: 0.14
   sphereDistance: 1.1
   hitPhase: 0.45
-  punchLeftTrigger: 
-  punchRightTrigger: 
 --- !u!1 &891526004255555362
 GameObject:
   m_ObjectHideFlags: 0
