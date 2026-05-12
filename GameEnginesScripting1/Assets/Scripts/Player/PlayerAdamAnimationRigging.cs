@@ -1,6 +1,8 @@
 using StarterAssets;
 using UnityEngine;
+#if HAS_ANIMATION_RIGGING
 using UnityEngine.Animations.Rigging;
+#endif
 
 /// <summary>
 /// Adds Animation Rigging Multi-Aim on the chest/spine so the upper body subtly follows the camera aim (TPS-style).
@@ -10,6 +12,7 @@ using UnityEngine.Animations.Rigging;
 [DisallowMultipleComponent]
 public class PlayerAdamAnimationRigging : MonoBehaviour
 {
+#if HAS_ANIMATION_RIGGING
     [SerializeField, Range(0f, 1f)] float aimWeight = 0.35f;
     [SerializeField] string spineBoneName = "Bip01 Spine1";
     [SerializeField] string spineBoneFallback = "Bip01 Spine";
@@ -98,4 +101,5 @@ public class PlayerAdamAnimationRigging : MonoBehaviour
         }
         return null;
     }
+#endif
 }
