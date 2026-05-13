@@ -4,6 +4,15 @@ using UnityEngine.InputSystem;
 #endif
 
 /// <summary>
+/// 剑身水平对齐参考：角色前向（随转身变化）或固定世界 +Z（Unity 蓝轴在水平面投影）。
+/// </summary>
+public enum SwordBladeAlignReference
+{
+    CharacterHorizontalForward = 0,
+    WorldHorizontalForwardZ = 1,
+}
+
+/// <summary>
 /// 刀剑持剑状态：由 <see cref="PlayerCombatStance"/> 驱动；开启时在指定手部骨骼下实例化剑并驱动 SwordHold 层与 SwordMode 参数。
 /// 挂接在 LateUpdate 完成，避免与 Humanoid 骨骼写入顺序冲突；手部优先 Inspector 挂点，其次 Humanoid 骨骼，再按层级名称（如 Right_Hand）查找。
 /// </summary>
@@ -28,7 +37,16 @@ public class PlayerSwordMode : MonoBehaviour
     [Tooltip("Fallback only when Humanoid RightHand and hierarchy name both fail. Prefab YAML ints can mismatch Unity versions.")]
     [SerializeField] HumanBodyBones handBone = HumanBodyBones.RightHand;
     [SerializeField] Vector3 swordLocalPosition;
-    [SerializeField] Vector3 swordLocalEulerAngles;
+    [Tooltip("相对右手骨骼的本地欧拉角。开启 alignBladeWithCharacterForward 时先应用此值再对齐到水平前向。")]
+    [SerializeField] Vector3 swordLocalEulerAngles = new Vector3(0f, 90f, 0f);
+    [Tooltip("将剑身长轴对齐到水平参考方向；关闭则仅使用 swordLocalEulerAngles。")]
+    [SerializeField] bool alignBladeWithCharacterForward;
+    [Tooltip("水平对齐使用的参考：角色前向，或固定世界 +Z（Scene 视图蓝轴、Vector3.forward）。")]
+    [SerializeField] SwordBladeAlignReference bladeAlignReference = SwordBladeAlignReference.CharacterHorizontalForward;
+    [Tooltip("剑根物体上表示剑身长度方向的局部向量（未归一化也可），常见为 (1,0,0) 或 (0,0,1)，视 FBX 根轴向而定。")]
+    [SerializeField] Vector3 bladeLocalAxis = new Vector3(1f, 0f, 0f);
+    [Tooltip("首次生成剑时，从子级 MeshFilter / SkinnedMeshRenderer 的 mesh.bounds 中选取最长轴作为剑身方向（写入 sword 根局部空间），避免与具体 FBX 轴向不一致。")]
+    [SerializeField] bool resolveBladeAxisFromMesh = true;
     [Tooltip("After spawn, set sword subtree layers to match this character root (helps cameras that only render the character layer).")]
     [SerializeField] bool syncSwordLayerWithCharacterRoot = true;
     [Tooltip("Log once on first successful spawn: hand path, renderer count, sword root name.")]
@@ -53,6 +71,8 @@ public class PlayerSwordMode : MonoBehaviour
     bool _warnedNullSwordPrefab;
     bool _warnedSpawnResolveFailed;
     bool _loggedSpawnDiagnosticsOnce;
+    bool _bladeLocalAxisFromMeshReady;
+    Vector3 _bladeLocalAxisResolved = Vector3.right;
 
     void Awake()
     {
@@ -199,6 +219,7 @@ public class PlayerSwordMode : MonoBehaviour
             }
 
             _warnedSpawnResolveFailed = false;
+            _bladeLocalAxisFromMeshReady = false;
             EnsureSwordRenderersEnabled(_swordInstance.transform);
             if (syncSwordLayerWithCharacterRoot)
                 ApplyLayerRecursive(_swordInstance.transform, gameObject.layer);
@@ -218,6 +239,106 @@ public class PlayerSwordMode : MonoBehaviour
 
         _swordInstance.transform.localPosition = swordLocalPosition;
         _swordInstance.transform.localRotation = Quaternion.Euler(swordLocalEulerAngles);
+
+        if (resolveBladeAxisFromMesh && !_bladeLocalAxisFromMeshReady)
+        {
+            if (!TryResolveBladeLocalAxisFromMeshes(_swordInstance.transform, out _bladeLocalAxisResolved))
+                _bladeLocalAxisResolved = bladeLocalAxis.sqrMagnitude > 1e-10f ? bladeLocalAxis.normalized : Vector3.right;
+            _bladeLocalAxisFromMeshReady = true;
+        }
+
+        if (alignBladeWithCharacterForward)
+            AlignBladeAlongHorizontalReference();
+    }
+
+    void AlignBladeAlongHorizontalReference()
+    {
+        if (_swordInstance == null)
+            return;
+
+        Vector3 raw = bladeAlignReference == SwordBladeAlignReference.WorldHorizontalForwardZ
+            ? Vector3.forward
+            : transform.forward;
+        Vector3 desired = Vector3.ProjectOnPlane(raw, Vector3.up);
+        if (desired.sqrMagnitude < 1e-8f)
+            desired = raw;
+        desired.Normalize();
+
+        Vector3 bladeLocal = GetBladeDirectionInSwordLocal();
+        Vector3 bladeWorld = _swordInstance.transform.TransformDirection(bladeLocal);
+        if (bladeWorld.sqrMagnitude < 1e-10f)
+            return;
+        bladeWorld.Normalize();
+
+        if (Vector3.Angle(bladeWorld, desired) < 0.1f)
+            return;
+
+        Quaternion delta = Quaternion.FromToRotation(bladeWorld, desired);
+        _swordInstance.transform.rotation = delta * _swordInstance.transform.rotation;
+    }
+
+    Vector3 GetBladeDirectionInSwordLocal()
+    {
+        if (resolveBladeAxisFromMesh && _bladeLocalAxisFromMeshReady)
+            return _bladeLocalAxisResolved;
+        return bladeLocalAxis.sqrMagnitude > 1e-10f ? bladeLocalAxis.normalized : Vector3.right;
+    }
+
+    /// <summary>
+    /// 在 sword 根局部空间中给出剑身长度方向：取子网格 AABB 最长轴（世界方向再映射回 sword 根局部），与 swordLocalEulerAngles 无关。
+    /// </summary>
+    static bool TryResolveBladeLocalAxisFromMeshes(Transform swordRoot, out Vector3 bladeLocalInSwordRoot)
+    {
+        bladeLocalInSwordRoot = Vector3.right;
+        if (swordRoot == null)
+            return false;
+
+        float bestMajor = 0f;
+        Vector3 bestInSwordLocal = Vector3.right;
+
+        void Consider(Transform meshOwner, Bounds localBounds)
+        {
+            Vector3 ext = localBounds.extents;
+            float major = Mathf.Max(ext.x, ext.y, ext.z);
+            if (major < 1e-6f || major < bestMajor)
+                return;
+
+            bestMajor = major;
+            Vector3 axisInMeshOwnerLocal;
+            if (ext.x >= ext.y && ext.x >= ext.z)
+                axisInMeshOwnerLocal = Vector3.right;
+            else if (ext.y >= ext.z)
+                axisInMeshOwnerLocal = Vector3.up;
+            else
+                axisInMeshOwnerLocal = Vector3.forward;
+
+            Vector3 worldDir = meshOwner.TransformDirection(axisInMeshOwnerLocal);
+            bestInSwordLocal = swordRoot.InverseTransformDirection(worldDir).normalized;
+        }
+
+        var meshFilters = swordRoot.GetComponentsInChildren<MeshFilter>(true);
+        for (int i = 0; i < meshFilters.Length; i++)
+        {
+            MeshFilter mf = meshFilters[i];
+            if (mf == null || mf.sharedMesh == null)
+                continue;
+            Consider(mf.transform, mf.sharedMesh.bounds);
+        }
+
+        var skinned = swordRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+        for (int i = 0; i < skinned.Length; i++)
+        {
+            SkinnedMeshRenderer smr = skinned[i];
+            if (smr == null || smr.sharedMesh == null)
+                continue;
+            Consider(smr.transform, smr.sharedMesh.bounds);
+        }
+
+        if (bestMajor < 1e-6f || bestInSwordLocal.sqrMagnitude < 1e-10f)
+            return false;
+
+        bladeLocalInSwordRoot = bestInSwordLocal;
+        return true;
     }
 
     Transform ResolveHandTransform()
@@ -323,6 +444,7 @@ public class PlayerSwordMode : MonoBehaviour
         Destroy(_swordInstance);
         _swordInstance = null;
         _loggedSpawnDiagnosticsOnce = false;
+        _bladeLocalAxisFromMeshReady = false;
     }
 
     void OnDestroy()
