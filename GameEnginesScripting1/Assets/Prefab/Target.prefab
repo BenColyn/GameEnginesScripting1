@@ -61,7 +61,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4150899946157431458}
+  - {fileID: 4472159089326925769}
   m_Father: {fileID: 583091413269648081}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &463236617251174108
@@ -344,9 +344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e2d1c0b9a847658392817465839201, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimWeight: 0.35
-  spineBoneName: Bip01 Spine1
-  spineBoneFallback: Bip01 Spine
 --- !u!114 &8833445566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,17 +356,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a2b1c0d9e847658392817465839202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minPunchInterval: 0.8
-  punchDurationLeft: 0.68
-  punchDurationRight: 1
-  brawlerLayerName: BrawlerPunch
-  brawlerStateMachineRootName: BrawlerPunch
-  stateHookLeft: BrawlerHookLeft
-  stateHookRight: BrawlerHookRight
-  hookLeftTrigger: BrawlerHookLeft
-  hookRightTrigger: BrawlerHookRight
-  punchCrossFade: 0.08
-  logPunchDiagnostics: 0
+  punchCooldown: 1
+  punchDuration: 0.38
+  rightUpperArmPunchEuler: {x: 62, y: -28, z: 42}
+  rightLowerArmPunchEuler: {x: 48, y: 8, z: -12}
+  rightHandPunchEuler: {x: -42, y: 28, z: 12}
+  leftUpperArmPunchEuler: {x: -62, y: 28, z: -42}
+  leftLowerArmPunchEuler: {x: -48, y: -8, z: 12}
+  leftHandPunchEuler: {x: -42, y: -28, z: -12}
   sphereCastOnPunch: 1
   hitLayers:
     serializedVersion: 2
@@ -1614,7 +1608,7 @@ Transform:
   m_GameObject: {fileID: 5418029520995742120}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.375, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2622,9 +2616,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2281548691721754860}
     m_Modifications:
+    - target: {fileID: 100000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_Name
+      value: Adam
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2666,22 +2676,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_Name
-      value: Adam
-      objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2691,7 +2685,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
---- !u!4 &4150899946157431458 stripped
+--- !u!4 &4472159089326925769 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
   m_PrefabInstance: {fileID: 4472159089326800201}

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 9685d8e0c5c551a47901edf081ed3172
+timeCreated: 1507392725
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 22070
+  packageName: Scanned Rocks with Moss and Snow
+  packageVersion: Version 2.11
+  assetPath: Assets/ScannedRocks/Misc/Materials/rock6_newuvMat.mat
+  uploadId: 254090

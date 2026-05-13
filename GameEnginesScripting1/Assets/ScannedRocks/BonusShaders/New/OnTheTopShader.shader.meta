@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 1bb9d16f70d130d49b3c3d372a111da9
+timeCreated: 1530485242
+licenseType: Store
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 22070
+  packageName: Scanned Rocks with Moss and Snow
+  packageVersion: Version 2.11
+  assetPath: Assets/ScannedRocks/BonusShaders/New/OnTheTopShader.shader
+  uploadId: 254090
