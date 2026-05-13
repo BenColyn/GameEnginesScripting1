@@ -1,0 +1,13 @@
+# Dateien automatisch als Text behandeln und beim Checkout in das OS-Format konvertieren
+* text=auto
+
+# C# Files explizit auf LF oder CRLF fixieren (viele Teams nutzen LF)
+*.cs text eol=lf
+*.shader text eol=lf
+*.asmdef text
+*.json text
+
+# Binärdateien (Bilder, Modelle) so lassen wie sie sind
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
