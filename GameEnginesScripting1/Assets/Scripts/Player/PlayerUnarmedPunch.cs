@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// 左键交替出拳：Brawler 上半身层左/右勾拳；两次出拳起点至少间隔 <see cref="minPunchInterval"/>（默认 0.8s）。
+/// 由 <see cref="PlayerCombatStance"/> 在持剑架势下关闭输入。
 /// 多路径 CrossFade/Play + 可选诊断日志（对应「右勾拳不呈现」排查：第二层当前状态、Controller 名、HasState 兜底）。
 /// </summary>
 [DisallowMultipleComponent]
@@ -57,6 +58,7 @@ public class PlayerUnarmedPunch : MonoBehaviour
     bool _warnedPlayFailed;
     bool _loggedControllerOnce;
     bool _warnedMissingBrawlerLayer;
+    bool _punchInputEnabled = true;
 
     void Awake()
     {
@@ -70,6 +72,26 @@ public class PlayerUnarmedPunch : MonoBehaviour
     {
         ResolveBrawlerLayer();
         WarnIfBrawlerLayerMissing();
+    }
+
+    /// <summary>由 <see cref="PlayerCombatStance"/> 调用：true 允许空手出拳，false 禁止并清理 Brawler 层。</summary>
+    public void SetUnarmedStanceActive(bool enabled)
+    {
+        _punchInputEnabled = enabled;
+        if (enabled)
+            return;
+
+        _queuedPunch = false;
+        if (_punching)
+            EndPunchWindow();
+        if (_animator != null && _brawlerLayer >= 0)
+        {
+            _animator.SetLayerWeight(_brawlerLayer, 0f);
+            if (!string.IsNullOrEmpty(hookLeftTrigger))
+                _animator.ResetTrigger(hookLeftTrigger);
+            if (!string.IsNullOrEmpty(hookRightTrigger))
+                _animator.ResetTrigger(hookRightTrigger);
+        }
     }
 
     void ResolveBrawlerLayer()
@@ -108,6 +130,9 @@ public class PlayerUnarmedPunch : MonoBehaviour
 
     void Update()
     {
+        if (!_punchInputEnabled)
+            return;
+
         if (_punching)
         {
             _punchElapsed += Time.deltaTime;
@@ -137,6 +162,8 @@ public class PlayerUnarmedPunch : MonoBehaviour
 
     void LateUpdate()
     {
+        if (!_punchInputEnabled)
+            return;
         if (!_punching || _animator == null || _brawlerLayer < 0)
             return;
         if (_animator.GetLayerWeight(_brawlerLayer) < 1f)

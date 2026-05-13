@@ -807,11 +807,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 0}
+  fieldOfView: 52
   shoulderX: 0.38
   shoulderY: 0.18
   cameraDistance: 4.5
-  composerYOffset: 1.15
+  composerYOffset: 1.18
+  transposerXDamping: 0.85
+  transposerYDamping: 0.55
+  transposerZDamping: 0.95
+  aimHorizontalDamping: 1.2
+  aimVerticalDamping: 0.95
+  aimDeadZoneWidth: 0.02
+  aimDeadZoneHeight: 0.02
+  defaultBlendTime: 0.35
   addColliderExtension: 1
+  colliderCameraRadius: 0.18
+  colliderMinimumDistanceFromTarget: 0.22
+  colliderDamping: 2
+  colliderDampingWhenOccluded: 3.5
+  colliderSmoothingTime: 0.28
 --- !u!81 &961739751
 AudioListener:
   m_ObjectHideFlags: 0
