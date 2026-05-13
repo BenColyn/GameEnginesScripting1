@@ -382,11 +382,7 @@ MonoBehaviour:
   gripAttachOverride: {fileID: 0}
   hierarchyHandBoneName: Right_Hand
   swordLocalPosition: {x: 0, y: 0, z: 0}
-  swordLocalEulerAngles: {x: 0, y: 90, z: 0}
-  alignBladeWithCharacterForward: 1
-  bladeAlignReference: 0
-  bladeLocalAxis: {x: 1, y: 0, z: 0}
-  resolveBladeAxisFromMesh: 1
+  swordLocalEulerAngles: {x: 0, y: 0, z: 0}
   syncSwordLayerWithCharacterRoot: 1
   logSwordSpawnDiagnostics: 0
   enableGreatswordSwing: 1
