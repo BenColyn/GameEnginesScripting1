@@ -481,6 +481,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Target
       objectReference: {fileID: 0}
+    - target: {fileID: 463236617251174108, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
+      propertyPath: m_TagString
+      value: Target
+      objectReference: {fileID: 0}
     - target: {fileID: 583091413269648081, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 95.28022
@@ -863,6 +867,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 56.548, y: 0, z: 0}
+--- !u!114 &961739754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961739749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4d8a91f3e2b4f5a8d7c6b5a49382716, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  virtualCamera: {fileID: 0}
+  shoulderX: 0.38
+  shoulderY: 0.18
+  cameraDistance: 4.5
+  composerYOffset: 1.15
+  addColliderExtension: 1
 --- !u!1 &1042184351
 GameObject:
   m_ObjectHideFlags: 0
