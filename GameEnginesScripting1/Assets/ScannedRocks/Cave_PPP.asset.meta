@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 5fb7080a4d4c1b0469850dcf2000c115
+timeCreated: 1526548439
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 22070
+  packageName: Scanned Rocks with Moss and Snow
+  packageVersion: Version 2.11
+  assetPath: Assets/ScannedRocks/Cave_PPP.asset
+  uploadId: 254090
