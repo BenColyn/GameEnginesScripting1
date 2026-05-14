@@ -140,6 +140,18 @@ PrefabInstance:
       propertyPath: m_NeverAutoSwitchControlSchemes
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5762160803773358998, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
+      propertyPath: MoveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5762160803773358998, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
+      propertyPath: SprintSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5762160803773358998, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
+      propertyPath: RotationSmoothTime
+      value: 0.208
+      objectReference: {fileID: 0}
     - target: {fileID: 6589440287070451230, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
       propertyPath: cursorLocked
       value: 0
