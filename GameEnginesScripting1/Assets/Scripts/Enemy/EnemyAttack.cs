@@ -42,11 +42,7 @@ public class EnemyAttack : MonoBehaviour
     {
         GameObject bulletClone = Instantiate(bulletPrefab, spawnPoint.transform.position, Quaternion.identity);
         Vector3 baseDir = (target.transform.position - transform.position).normalized * Time.deltaTime;
-        Quaternion spreadRotation = Quaternion.Euler(
-        Random.Range(-angle, angle), // 5 Grad Streuung nach oben/unten
-        Random.Range(-angle, angle), // 5 Grad Streuung nach links/rechts
-        0
-        );
+        Quaternion spreadRotation = Quaternion.Euler( Random.Range(-angle, angle), Random.Range(-angle, angle), 0);
         Vector3 finalDir = spreadRotation * baseDir;
         bulletClone.GetComponent<EnemyProjectileFly>().SetDirection(finalDir);
     }

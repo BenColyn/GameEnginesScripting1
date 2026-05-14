@@ -1,4 +1,5 @@
 using Unity.Cinemachine;
+using Unity.Cinemachine.TargetTracking;
 using StarterAssets;
 using UnityEngine;
 
@@ -10,8 +11,12 @@ using UnityEngine;
 [DefaultExecutionOrder(-200)]
 public class TPSCinemachineBootstrap : MonoBehaviour
 {
+    const string RuntimeThirdPersonCameraName = "CM ThirdPerson";
+
     [Header("Virtual camera")]
     [SerializeField] CinemachineCamera virtualCamera;
+    [Tooltip("When no reference is set, prefer a CinemachineCamera on a GameObject with this name (e.g. after saving the scene once).")]
+    [SerializeField] string preferredVirtualCameraObjectName = RuntimeThirdPersonCameraName;
 
     [Header("Framing")]
     [SerializeField, Range(20f, 80f)] float fieldOfView = 52f;
@@ -42,6 +47,27 @@ public class TPSCinemachineBootstrap : MonoBehaviour
     [SerializeField, Range(0f, 10f)] float colliderDampingWhenOccluded = 3.5f;
     [SerializeField, Range(0f, 2f)] float colliderSmoothingTime = 0.28f;
 
+    CinemachineCamera ResolveVirtualCamera()
+    {
+        if (virtualCamera != null)
+            return virtualCamera;
+
+        var all = FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        if (!string.IsNullOrEmpty(preferredVirtualCameraObjectName))
+        {
+            for (var i = 0; i < all.Length; i++)
+            {
+                if (all[i] != null && all[i].gameObject.name == preferredVirtualCameraObjectName)
+                    return all[i];
+            }
+        }
+
+        if (all.Length == 1)
+            return all[0];
+
+        return all.Length > 0 ? all[0] : null;
+    }
+
     void Awake()
     {
         if (Camera.main == null)
@@ -53,14 +79,11 @@ public class TPSCinemachineBootstrap : MonoBehaviour
             brain = camGo.AddComponent<CinemachineBrain>();
         brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, defaultBlendTime);
 
-        // Suche nach CM3 Kamera
-        CinemachineCamera vcam = virtualCamera;
-        if (vcam == null)
-            vcam = FindFirstObjectByType<CinemachineCamera>();
+        CinemachineCamera vcam = ResolveVirtualCamera();
 
         if (vcam == null)
         {
-            var go = new GameObject("CM ThirdPerson");
+            var go = new GameObject(RuntimeThirdPersonCameraName);
             vcam = go.AddComponent<CinemachineCamera>();
             vcam.Priority = 10;
         }
@@ -81,7 +104,13 @@ public class TPSCinemachineBootstrap : MonoBehaviour
             follow = vcam.gameObject.AddComponent<CinemachineFollow>();
 
         follow.FollowOffset = new Vector3(shoulderX, shoulderY, -cameraDistance);
-        // Hinweis: Die Standard-Einstellungen von CinemachineFollow ersetzen das alte "LockToTargetWithWorldUp" automatisch perfekt.
+
+        var tracker = follow.TrackerSettings;
+        tracker.BindingMode = BindingMode.LockToTargetWithWorldUp;
+        tracker.PositionDamping = new Vector3(transposerXDamping, transposerYDamping, transposerZDamping);
+        tracker.AngularDampingMode = AngularDampingMode.Quaternion;
+        tracker.QuaternionDamping = 1f;
+        follow.TrackerSettings = tracker;
 
         // 2. Rotation (Ersetzt den alten Composer)
         var composer = vcam.GetComponent<CinemachineRotationComposer>();
@@ -89,12 +118,29 @@ public class TPSCinemachineBootstrap : MonoBehaviour
             composer = vcam.gameObject.AddComponent<CinemachineRotationComposer>();
 
         composer.TargetOffset = new Vector3(0f, composerYOffset, 0f);
+        composer.Damping = new Vector2(aimHorizontalDamping, aimVerticalDamping);
+
+        var composition = composer.Composition;
+        composition.DeadZone.Enabled = aimDeadZoneWidth > 0f || aimDeadZoneHeight > 0f;
+        composition.DeadZone.Size = new Vector2(aimDeadZoneWidth, aimDeadZoneHeight);
+        composer.Composition = composition;
 
         // 3. Linse (m_ Präfix ist weg)
         vcam.Lens.FieldOfView = fieldOfView;
 
         // 4. Collider
-        if (addColliderExtension && vcam.GetComponent<CinemachineCollider>() == null)
-            vcam.gameObject.AddComponent<CinemachineCollider>();
+        if (addColliderExtension)
+        {
+            var cameraCollider = vcam.GetComponent<CinemachineCollider>();
+            if (cameraCollider == null)
+                cameraCollider = vcam.gameObject.AddComponent<CinemachineCollider>();
+
+            cameraCollider.m_CameraRadius = colliderCameraRadius;
+            cameraCollider.m_MinimumDistanceFromTarget = colliderMinimumDistanceFromTarget;
+            cameraCollider.m_Damping = colliderDamping;
+            cameraCollider.m_DampingWhenOccluded = colliderDampingWhenOccluded;
+            cameraCollider.m_SmoothingTime = colliderSmoothingTime;
+            cameraCollider.m_AvoidObstacles = true;
+        }
     }
 }

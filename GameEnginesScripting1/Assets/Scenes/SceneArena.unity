@@ -815,6 +815,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 0}
+  preferredVirtualCameraObjectName: CM ThirdPerson
   fieldOfView: 52
   shoulderX: 0.38
   shoulderY: 0.18
