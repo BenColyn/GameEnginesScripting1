@@ -40,6 +40,10 @@ public class PlayerSwordMode : MonoBehaviour
     [SerializeField] string swordAttackTriggerParameter = "SwordAttack";
     [SerializeField] float minSwingInterval = 0.55f;
 
+    [Header("Enemy melee (same as unarmed punch)")]
+    [Tooltip("持剑左键时沿用 PlayerUnarmedPunch 的 SphereCast，对带 EnemyDie / IDamageable 的目标与空手一致。")]
+    [SerializeField] bool applyMeleeEnemyHitOnPrimaryAttack = true;
+
     Animator _animator;
     int _swordLayer = -1;
     int _brawlerLayer = -1;
@@ -54,9 +58,12 @@ public class PlayerSwordMode : MonoBehaviour
     bool _warnedSpawnResolveFailed;
     bool _loggedSpawnDiagnosticsOnce;
 
+    PlayerUnarmedPunch _punch;
+
     void Awake()
     {
         _animator = GetComponent<Animator>();
+        _punch = GetComponent<PlayerUnarmedPunch>();
         _swordModeHash = Animator.StringToHash(swordModeParameter);
         _swordAttackHash = Animator.StringToHash(swordAttackTriggerParameter);
         ResolveLayers();
@@ -92,6 +99,8 @@ public class PlayerSwordMode : MonoBehaviour
             return;
         if (!WasPrimaryAttackPressedThisFrame())
             return;
+        if (applyMeleeEnemyHitOnPrimaryAttack && _punch != null)
+            _punch.TryMeleeHitFromView();
         _animator.SetTrigger(_swordAttackHash);
         _nextSwingAllowedTime = Time.time + minSwingInterval;
     }
@@ -261,7 +270,11 @@ public class PlayerSwordMode : MonoBehaviour
     bool WasPrimaryAttackPressedThisFrame()
     {
 #if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            return true;
+        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+            return true;
+        return false;
 #else
         return Input.GetMouseButtonDown(0);
 #endif

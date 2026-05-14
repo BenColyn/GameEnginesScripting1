@@ -326,6 +326,15 @@ public class PlayerUnarmedPunch : MonoBehaviour
 
     void TryPunchHit()
     {
+        TryMeleeHitFromView();
+    }
+
+    /// <summary>
+    /// Same sphere cast / <see cref="EnemyDie"/> / <see cref="IDamageable"/> path as mid-punch hit.
+    /// Used by <see cref="PlayerSwordMode"/> when Brawler punch input is disabled but melee on enemies should match unarmed.
+    /// </summary>
+    public void TryMeleeHitFromView()
+    {
         Camera cam = Camera.main;
         Vector3 origin = transform.position + Vector3.up * 1.15f;
         Vector3 dir = cam != null ? cam.transform.forward : transform.forward;
@@ -339,7 +348,6 @@ public class PlayerUnarmedPunch : MonoBehaviour
                 dmg.ApplyDamage(1);
             else
             {
-                // Wir suchen das EnemyDie-Skript direkt auf dem Objekt, das wir getroffen haben
                 EnemyDie hitEnemy = hit.collider.GetComponent<EnemyDie>();
 
                 if (hitEnemy != null)
