@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8db8dd4fa925d804bb08d1553997377e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spawnen
+  spawn: {fileID: 1427455840}
   enemyPrefab: {fileID: 6583783016967566217, guid: a88b6eecec3445746b228dea06d25f89, type: 3}
   player: {fileID: 1917415079}
   plPosition: {fileID: 1917415088}
@@ -562,6 +563,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8833445566, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
+      propertyPath: hitLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 463236617251174108, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
       propertyPath: m_Name
       value: Target
@@ -755,6 +760,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1917415088}
   m_LocalEulerAnglesHint: {x: 8.013, y: 0, z: 0}
+--- !u!1 &1427455840
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1427455841}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1427455841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427455840}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 83.949, y: 9.151, z: 43.12787}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1917415079 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 463236617251174108, guid: f7a8e9d0c1b24365869788990a0b1c2d, type: 3}
@@ -773,4 +809,5 @@ SceneRoots:
   - {fileID: 897360086}
   - {fileID: 585306177}
   - {fileID: 528145433}
+  - {fileID: 1427455841}
   - {fileID: 177475509}
