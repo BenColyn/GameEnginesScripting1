@@ -38,9 +38,9 @@ public class Spawnen : MonoBehaviour
     {
         if (enemyPrefab != null)
         {
-            float spawnRadius = 100f;
+            float spawnRadius = 30f;
             Vector2 randomCirclePoint = UnityEngine.Random.insideUnitCircle * spawnRadius;
-            Vector3 spawnPos = new Vector3( transform.position.x + randomCirclePoint.x, 0f, transform.position.z + randomCirclePoint.y );
+            Vector3 spawnPos = new Vector3( transform.position.x + randomCirclePoint.x, 10f, transform.position.z + randomCirclePoint.y );
             GameObject spawnedEnemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
             EnemyMovement movementScript = spawnedEnemy.GetComponent<EnemyMovement>();
             EnemyAttack attackScript = spawnedEnemy.GetComponent<EnemyAttack>();
