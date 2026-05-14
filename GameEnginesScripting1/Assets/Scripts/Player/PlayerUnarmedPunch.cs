@@ -13,6 +13,7 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(10000)]
 public class PlayerUnarmedPunch : MonoBehaviour
 {
+    public Spawnen spawner;
     [Tooltip("两次出拳开始时刻之间的最小间隔（秒）。")]
     [SerializeField] float minPunchInterval = 0.8f;
 
@@ -337,7 +338,21 @@ public class PlayerUnarmedPunch : MonoBehaviour
             if (dmg != null)
                 dmg.ApplyDamage(1);
             else
+            {
+                // Wir suchen das EnemyDie-Skript direkt auf dem Objekt, das wir getroffen haben
+                EnemyDie hitEnemy = hit.collider.GetComponent<EnemyDie>();
+
+                if (hitEnemy != null)
+                {
+                    hitEnemy.Die();
+                }
+                else
+                {
+                    Debug.LogWarning("Getroffen, aber das Objekt hat kein EnemyDie-Skript!");
+                }
+
                 Debug.Log($"[Punch] Hit {hit.collider.name}", hit.collider);
+            }
         }
     }
 

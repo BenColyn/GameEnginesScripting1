@@ -23,7 +23,7 @@ public class EnemyMovement : MonoBehaviour
             if (direction.magnitude <= maxDistance)
             {
                 inRange = true;
-               
+                
             }
             if (direction.magnitude >= maxDistance)
             {
@@ -37,7 +37,7 @@ public class EnemyMovement : MonoBehaviour
             
         }
     }
-    public void SetTatget(GameObject inTarget)
+    public void SetTartget(GameObject inTarget)
     {
         this.target = inTarget;
     }
