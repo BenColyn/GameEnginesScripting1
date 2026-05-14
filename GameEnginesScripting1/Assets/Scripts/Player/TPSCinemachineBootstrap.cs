@@ -3,13 +3,13 @@ using StarterAssets;
 using UnityEngine;
 
 /// <summary>
-/// Ensures Main Camera has CinemachineBrain and configures a third-person virtual camera
-/// that follows the StarterAssets CinemachineCameraTarget (mouse look pivot).
+/// Cinemachine 3 Update: Configures a third-person camera that follows the StarterAssets target.
 /// </summary>
 [DefaultExecutionOrder(-200)]
 public class TPSCinemachineBootstrap : MonoBehaviour
 {
-    [SerializeField] CinemachineVirtualCamera virtualCamera;
+    // CM3 nutzt jetzt "CinemachineCamera" statt "CinemachineVirtualCamera"
+    [SerializeField] CinemachineCamera virtualCamera;
     [SerializeField] float shoulderX = 0.35f;
     [SerializeField] float shoulderY = 0.15f;
     [SerializeField] float cameraDistance = 4f;
@@ -25,15 +25,16 @@ public class TPSCinemachineBootstrap : MonoBehaviour
         if (camGo.GetComponent<CinemachineBrain>() == null)
             camGo.AddComponent<CinemachineBrain>();
 
-        CinemachineVirtualCamera vcam = virtualCamera;
+        // Suche nach CM3 Kamera
+        CinemachineCamera vcam = virtualCamera;
         if (vcam == null)
-            vcam = FindFirstObjectByType<CinemachineVirtualCamera>();
+            vcam = FindFirstObjectByType<CinemachineCamera>();
 
         if (vcam == null)
         {
             var go = new GameObject("CM ThirdPerson");
-            vcam = go.AddComponent<CinemachineVirtualCamera>();
-            vcam.Priority.Value = 10;
+            vcam = go.AddComponent<CinemachineCamera>();
+            vcam.Priority = 10;
         }
 
         var player = FindFirstObjectByType<ThirdPersonController>();
@@ -44,19 +45,27 @@ public class TPSCinemachineBootstrap : MonoBehaviour
         vcam.Follow = target;
         vcam.LookAt = target;
 
-        var transposer = vcam.GetCinemachineComponent<CinemachineTransposer>();
-        if (transposer == null)
-            transposer = vcam.AddCinemachineComponent<CinemachineTransposer>();
-        transposer.m_BindingMode = Unity.Cinemachine.TargetTracking.BindingMode.LockToTargetWithWorldUp;
-        transposer.m_FollowOffset = new Vector3(shoulderX, shoulderY, -cameraDistance);
+        // --- CM3 REWRITE: Komponenten sind jetzt normale MonoBehaviours ---
 
-        var composer = vcam.GetCinemachineComponent<CinemachineComposer>();
+        // 1. Position (Ersetzt den alten Transposer)
+        var follow = vcam.GetComponent<CinemachineFollow>();
+        if (follow == null)
+            follow = vcam.gameObject.AddComponent<CinemachineFollow>();
+
+        follow.FollowOffset = new Vector3(shoulderX, shoulderY, -cameraDistance);
+        // Hinweis: Die Standard-Einstellungen von CinemachineFollow ersetzen das alte "LockToTargetWithWorldUp" automatisch perfekt.
+
+        // 2. Rotation (Ersetzt den alten Composer)
+        var composer = vcam.GetComponent<CinemachineRotationComposer>();
         if (composer == null)
-            composer = vcam.AddCinemachineComponent<CinemachineComposer>();
-        composer.m_TrackedObjectOffset = new Vector3(0f, composerYOffset, 0f);
+            composer = vcam.gameObject.AddComponent<CinemachineRotationComposer>();
 
-        vcam.m_Lens.FieldOfView = 55f;
+        composer.TargetOffset = new Vector3(0f, composerYOffset, 0f);
 
+        // 3. Linse (m_ Präfix ist weg)
+        vcam.Lens.FieldOfView = 55f;
+
+        // 4. Collider
         if (addColliderExtension && vcam.GetComponent<CinemachineCollider>() == null)
             vcam.gameObject.AddComponent<CinemachineCollider>();
     }
