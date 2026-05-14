@@ -92,6 +92,10 @@ PrefabInstance:
       value: 2.1776867
       objectReference: {fileID: 0}
     - target: {fileID: 3309863344327094145, guid: 910177ec26b76c14996c2d53627a6def, type: 3}
+      propertyPath: m_Radius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3309863344327094145, guid: 910177ec26b76c14996c2d53627a6def, type: 3}
       propertyPath: m_Center.y
       value: 1.0557528
       objectReference: {fileID: 0}
@@ -146,6 +150,14 @@ PrefabInstance:
     - target: {fileID: 7072444061591711186, guid: 910177ec26b76c14996c2d53627a6def, type: 3}
       propertyPath: m_Name
       value: PolyartCharacter Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072444061591711186, guid: 910177ec26b76c14996c2d53627a6def, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7072444061591711186, guid: 910177ec26b76c14996c2d53627a6def, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -211,9 +223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c835e9cff8c26e944bf2732e39f53f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
-  target: {fileID: 0}
+  target: {fileID: 5353559256183889517, guid: 28a12c7cf9574c34886901c2830d072a, type: 3}
   angle: 8
-  fireRate: 0
+  fireRate: 2
   bulletPrefab: {fileID: 3395605281706638475, guid: 6c394bc6e0e6b214d89a8e2e0e5f8dfe, type: 3}
   spawnPoint: {fileID: 3458230126857244255}
 --- !u!114 &7536056487848706582
@@ -241,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbbbc214e60fb6743831064723fbb61a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
-  speed: 2
+  speed: 5
   maxDistance: 10
   target: {fileID: 5353559256183889517, guid: 28a12c7cf9574c34886901c2830d072a, type: 3}
   targetPosition: {fileID: 4913876299827214944, guid: 28a12c7cf9574c34886901c2830d072a, type: 3}
