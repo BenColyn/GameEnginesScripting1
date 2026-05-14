@@ -61,7 +61,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4472159089326925769}
+  - {fileID: 4150899946157431458}
   m_Father: {fileID: 583091413269648081}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &463236617251174108
@@ -73,6 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 583091413269648081}
+  - component: {fileID: 8822558844332211003}
   - component: {fileID: 7930490122344824380}
   - component: {fileID: 5058610423253894750}
   - component: {fileID: 5762160803773358998}
@@ -81,6 +82,7 @@ GameObject:
   - component: {fileID: 4872489169424077207}
   - component: {fileID: 8877665544332211001}
   - component: {fileID: 8833445566}
+  - component: {fileID: 7722558844332211002}
   m_Layer: 8
   m_Name: Target
   m_TagString: Untagged
@@ -88,6 +90,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8822558844332211003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 463236617251174108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f6a7485969708192939495aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &583091413269648081
 Transform:
   m_ObjectHideFlags: 0
@@ -330,6 +344,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e2d1c0b9a847658392817465839201, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aimWeight: 0.35
+  spineBoneName: Bip01 Spine1
+  spineBoneFallback: Bip01 Spine
 --- !u!114 &8833445566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,14 +359,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a2b1c0d9e847658392817465839202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  punchCooldown: 1
-  punchDuration: 0.38
-  rightUpperArmPunchEuler: {x: 62, y: -28, z: 42}
-  rightLowerArmPunchEuler: {x: 48, y: 8, z: -12}
-  rightHandPunchEuler: {x: -42, y: 28, z: 12}
-  leftUpperArmPunchEuler: {x: -62, y: 28, z: -42}
-  leftLowerArmPunchEuler: {x: -48, y: -8, z: 12}
-  leftHandPunchEuler: {x: -42, y: -28, z: -12}
+  minPunchInterval: 0.8
+  punchDurationLeft: 0.68
+  punchDurationRight: 1
+  brawlerLayerName: BrawlerPunch
+  brawlerStateMachineRootName: BrawlerPunch
+  stateHookLeft: BrawlerHookLeft
+  stateHookRight: BrawlerHookRight
+  hookLeftTrigger: BrawlerHookLeft
+  hookRightTrigger: BrawlerHookRight
+  punchCrossFade: 0.08
+  logPunchDiagnostics: 0
   sphereCastOnPunch: 1
   hitLayers:
     serializedVersion: 2
@@ -357,6 +377,33 @@ MonoBehaviour:
   sphereRadius: 0.14
   sphereDistance: 1.1
   hitPhase: 0.45
+--- !u!114 &7722558844332211002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 463236617251174108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f647586970819293949596, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swordHoldLayerName: SwordHold
+  swordModeParameter: SwordMode
+  brawlerLayerName: BrawlerPunch
+  hookLeftTrigger: BrawlerHookLeft
+  hookRightTrigger: BrawlerHookRight
+  swordPrefab: {fileID: 919132149155446097, guid: d9cb89b0bc352ec4a8a17c56c39dbefb, type: 3}
+  gripAttachOverride: {fileID: 0}
+  hierarchyHandBoneName: Right_Hand
+  swordLocalPosition: {x: 0, y: 0, z: 0}
+  swordLocalEulerAngles: {x: 0, y: 0, z: 0}
+  syncSwordLayerWithCharacterRoot: 1
+  logSwordSpawnDiagnostics: 0
+  enableGreatswordSwing: 1
+  swordAttackTriggerParameter: SwordAttack
+  minSwingInterval: 0.55
 --- !u!1 &891526004255555362
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,7 +1610,7 @@ Transform:
   m_GameObject: {fileID: 5418029520995742120}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.375, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2571,25 +2618,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2281548691721754860}
     m_Modifications:
-    - target: {fileID: 100000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_Name
-      value: Adam
-      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2631,6 +2662,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
+      propertyPath: m_Name
+      value: Adam
+      objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2640,7 +2687,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
---- !u!4 &4472159089326925769 stripped
+--- !u!4 &4150899946157431458 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: f12f2d44b2688054986e54861cc211dc, type: 3}
   m_PrefabInstance: {fileID: 4472159089326800201}
