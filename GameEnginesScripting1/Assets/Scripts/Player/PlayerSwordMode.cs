@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 #endif
 
 /// <summary>
-/// 刀剑持剑状态：由 <see cref="PlayerCombatStance"/> 驱动；开启时在指定手部骨骼下实例化剑并驱动 SwordHold 层与 SwordMode 参数。
-/// 挂接在 LateUpdate 完成，避免与 Humanoid 骨骼写入顺序冲突；手部优先 Inspector 挂点，其次 Humanoid 骨骼，再按层级名称（如 Right_Hand）查找。
+/// Sword-holding state: Driven by <see cref="PlayerCombatStance"/>; when enabled, instantiates the sword under the specified hand bone and drives the SwordHold layer and SwordMode parameter.
+/// Attached after LateUpdate completes to avoid conflicts with the Humanoid skeleton write order; prioritizes Inspector attachments on the hand, followed by the Humanoid skeleton, and then searches by layer name (e.g., Right_Hand).
 /// </summary>
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(10001)]

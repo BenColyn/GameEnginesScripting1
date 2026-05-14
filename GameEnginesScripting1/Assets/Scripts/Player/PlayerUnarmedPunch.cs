@@ -5,9 +5,9 @@ using UnityEngine.InputSystem;
 #endif
 
 /// <summary>
-/// 左键交替出拳：Brawler 上半身层左/右勾拳；两次出拳起点至少间隔 <see cref="minPunchInterval"/>（默认 0.8s）。
-/// 由 <see cref="PlayerCombatStance"/> 在持剑架势下关闭输入。
-/// 多路径 CrossFade/Play + 可选诊断日志（对应「右勾拳不呈现」排查：第二层当前状态、Controller 名、HasState 兜底）。
+/// Alternate left-click punches: Brawler throws left/right hooks with the upper body; there must be at least a <see cref="minPunchInterval"/> interval (default 0.8s) between the start of two punches.
+/// Input is disabled in sword-wielding stance via <see cref="PlayerCombatStance"/>.
+/// Multi-path CrossFade/Play + optional diagnostic logging (for troubleshooting “right hook not rendering”: current state of the second layer, controller name, and HasState fallback).
 /// </summary>
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(10000)]
