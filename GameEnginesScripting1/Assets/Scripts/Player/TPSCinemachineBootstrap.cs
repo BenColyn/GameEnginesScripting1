@@ -1,4 +1,4 @@
-using Unity.Cinemachine;
+using Cinemachine;
 using StarterAssets;
 using UnityEngine;
 
@@ -33,7 +33,7 @@ public class TPSCinemachineBootstrap : MonoBehaviour
         {
             var go = new GameObject("CM ThirdPerson");
             vcam = go.AddComponent<CinemachineVirtualCamera>();
-            vcam.Priority.Value = 10;
+            vcam.Priority = 10;
         }
 
         var player = FindFirstObjectByType<ThirdPersonController>();
@@ -47,7 +47,7 @@ public class TPSCinemachineBootstrap : MonoBehaviour
         var transposer = vcam.GetCinemachineComponent<CinemachineTransposer>();
         if (transposer == null)
             transposer = vcam.AddCinemachineComponent<CinemachineTransposer>();
-        transposer.m_BindingMode = Unity.Cinemachine.TargetTracking.BindingMode.LockToTargetWithWorldUp;
+        transposer.m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetWithWorldUp;
         transposer.m_FollowOffset = new Vector3(shoulderX, shoulderY, -cameraDistance);
 
         var composer = vcam.GetCinemachineComponent<CinemachineComposer>();

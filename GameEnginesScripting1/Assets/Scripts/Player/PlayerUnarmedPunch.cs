@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(1100)]
 public class PlayerUnarmedPunch : MonoBehaviour
 {
+    public EnemyDie enemyDie;
     [SerializeField] float punchCooldown = 1f;
     [SerializeField] float punchDuration = 0.38f;
 
@@ -213,7 +214,20 @@ public class PlayerUnarmedPunch : MonoBehaviour
             if (dmg != null)
                 dmg.ApplyDamage(1);
             else
+            {
+                EnemyDie hitEnemy = hit.collider.GetComponent<EnemyDie>();
+                if (hitEnemy != null)
+                {
+                    hitEnemy.Die();
+                }
+                else
+                {
+                    Debug.LogWarning("Getroffen, aber das Objekt hat kein EnemyDie-Skript!");
+                }
+
                 Debug.Log($"[Punch] Hit {hit.collider.name}", hit.collider);
+             
+            }
         }
     }
 

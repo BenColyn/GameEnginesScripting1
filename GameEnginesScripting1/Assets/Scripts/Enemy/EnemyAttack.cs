@@ -23,6 +23,7 @@ public class EnemyAttack : MonoBehaviour
         bool inRange = enemyMovement.GetInRange();
         if (inRange == true)
         {
+            
             if (target == null)
             {
                 return;
@@ -32,6 +33,7 @@ public class EnemyAttack : MonoBehaviour
             {
                 time = 0;
                 SpawnBullet();
+                
             }
         }
         
@@ -47,5 +49,9 @@ public class EnemyAttack : MonoBehaviour
         );
         Vector3 finalDir = spreadRotation * baseDir;
         bulletClone.GetComponent<EnemyProjectileFly>().SetDirection(finalDir);
+    }
+    public void SetTartget(GameObject inTarget)
+    {
+        this.target = inTarget;
     }
 }

@@ -14,7 +14,9 @@ GameObject:
   - component: {fileID: 2414484667682488923}
   - component: {fileID: 2212856972509545339}
   - component: {fileID: 1678203001132003668}
-  m_Layer: 0
+  - component: {fileID: 6811353617205989974}
+  - component: {fileID: -8219750758487956450}
+  m_Layer: 7
   m_Name: enemy2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,14 +142,56 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6583783016967566217}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c835e9cff8c26e944bf2732e39f53f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+  target: {fileID: 0}
+  angle: 8
   fireRate: 1
   bulletPrefab: {fileID: 3395605281706638475, guid: 6c394bc6e0e6b214d89a8e2e0e5f8dfe, type: 3}
   spawnPoint: {fileID: 6655222000501358477}
+--- !u!54 &6811353617205989974
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6583783016967566217}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!114 &-8219750758487956450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6583783016967566217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cc80a5b56a21104d88e9f3b1ad7222b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDie
+  spawner: {fileID: 0}
 --- !u!1 &6655222000501358477
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +201,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5716930337124743285}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: shot spawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +217,7 @@ Transform:
   m_GameObject: {fileID: 6655222000501358477}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.053, y: -0.202, z: -0.401}
+  m_LocalPosition: {x: 0.053, y: -0.202, z: 0.749}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
