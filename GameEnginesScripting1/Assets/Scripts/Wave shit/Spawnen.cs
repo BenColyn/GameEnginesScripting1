@@ -2,15 +2,17 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
+using TMPro;
 
 public class Spawnen : MonoBehaviour
 {
     [Header("Wave Settings")]
     public GameObject spawn;
     public GameObject enemyPrefab;
+    public TextMeshProUGUI waveText; 
     [SerializeField] private float maxZ = 20.0f;
     [SerializeField] private float maxX = 20.0f;
-    private int waveNumber;
+    private int waveNumber =0;
     private int enemySpawnAmount=0;
     private int enemiesKilled;
     
@@ -29,6 +31,8 @@ public class Spawnen : MonoBehaviour
     void Update()
     {
         WaveTrigger trigger = GetComponent<WaveTrigger>();
+        if (trigger != null ) {
+        
         bool spawn = trigger.GetSpawnWave();
         
         if (spawn == true)
@@ -37,6 +41,11 @@ public class Spawnen : MonoBehaviour
             trigger.SetSpawnWave(false);
 
         }
+    }
+    else
+    {
+        Debug.LogWarning("WaveTrigger-Komponente nicht gefunden!");
+    }
     }
     void Spawn()
     {
@@ -66,6 +75,9 @@ public class Spawnen : MonoBehaviour
     }
     void StartWave()
     {
+
+    
+
         enemySpawnAmount += 2;
         enemiesKilled = 0;
         for (int i = 0; i < enemySpawnAmount; i++)
@@ -74,13 +86,20 @@ public class Spawnen : MonoBehaviour
 
         }
     }
-  /*  public void NextWave()
+    void UpdateWaveUI()
     {
-        waveNumber++;
-        enemySpawnAmount += 2;
-        enemiesKilled = 0;
-        
-    }*/
+        if (waveText != null)
+        {
+            waveText.text = "Wave: " + ( waveNumber +1);
+        }
+    }
+    /*  public void NextWave()
+      {
+          waveNumber++;
+          enemySpawnAmount += 2;
+          enemiesKilled = 0;
+
+      }*/
     public void ResetPlayerPosition()
     {
         if (player != null && spawn != null)
@@ -102,11 +121,15 @@ public class Spawnen : MonoBehaviour
     public void OnEnemyKilled()
     {
         enemiesKilled++;
-        Debug.Log("+1");
+        Debug.Log("+1 Gegner tot");
         if (enemiesKilled >= enemySpawnAmount)
         {
+        waveNumber++;
+        UpdateWaveUI();
+
             ResetPlayerPosition();
-           
+            Debug.Log("Alle Gegner besiegt! Bereit für die nächste Welle.");
+
         }
     }
     public void ShowDeathScreen()
@@ -125,6 +148,8 @@ public class Spawnen : MonoBehaviour
         Time.timeScale = 1f;
         enemiesKilled = 0;
         waveNumber = 0;
+        enemySpawnAmount = 0;
+        UpdateWaveUI();
 
         GameObject[] restlicheGegner = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject gegner in restlicheGegner)
