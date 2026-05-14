@@ -6,6 +6,7 @@ public class EnemyProjectileFly : MonoBehaviour
     [SerializeField] float lifeTime = 1f;
     public GameObject target;
     private Vector3 direction;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -30,8 +31,13 @@ public class EnemyProjectileFly : MonoBehaviour
     {
         if (other.CompareTag("Target"))
         {
-            Destroy(other.gameObject);
-            
+            // Wir suchen den WaveSpawner in der Szene und rufen die Methode auf
+            Spawnen spawner = FindFirstObjectByType<Spawnen>();
+            if (spawner != null)
+            {
+                spawner.ShowDeathScreen();
+            }
+
         }
         Destroy(gameObject);
         

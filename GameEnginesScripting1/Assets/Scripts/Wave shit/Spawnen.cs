@@ -5,16 +5,20 @@ using UnityEngine.UIElements;
 
 public class Spawnen : MonoBehaviour
 {
+    [Header("Wave Settings")]
     public GameObject spawn;
     public GameObject enemyPrefab;
-    public GameObject player;
-    public Transform plPosition;
     [SerializeField] private float maxZ = 20.0f;
     [SerializeField] private float maxX = 20.0f;
     private int waveNumber;
     private int enemySpawnAmount=0;
     private int enemiesKilled;
     
+    [Header("UI & Reset")]
+    public GameObject player;
+    public Transform plPosition;
+    public GameObject deathScreenUI;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -102,8 +106,40 @@ public class Spawnen : MonoBehaviour
         if (enemiesKilled >= enemySpawnAmount)
         {
             ResetPlayerPosition();
-           // NextWave();
+           
         }
     }
+    public void ShowDeathScreen()
+    {
+        deathScreenUI.SetActive(true);
+        Time.timeScale = 0f; 
+
+        
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+    }
+
+    
+    public void ResetGame()
+    {
+        Time.timeScale = 1f;
+        enemiesKilled = 0;
+        waveNumber = 0;
+
+        GameObject[] restlicheGegner = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject gegner in restlicheGegner)
+        {
+            Destroy(gegner);
+        }
+        ResetPlayerPosition();
+        
+
+        deathScreenUI.SetActive(false);
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
+
+    }
+
+
 }
  
